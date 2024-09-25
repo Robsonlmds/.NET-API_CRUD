@@ -53,7 +53,7 @@ namespace WebApi.Controllers
             return Ok(staff);
         }
 
-        [HttpDelete("DeletarStaff")]
+        [HttpDelete("DeletarStaff/{IdStaff}")]
         public async Task<ActionResult<ResponseModel<List<StaffModel>>>> DeletarStaff (Guid IdStaff)
         {
             var staff = await _staffInterface.DeletarStaff (IdStaff);
