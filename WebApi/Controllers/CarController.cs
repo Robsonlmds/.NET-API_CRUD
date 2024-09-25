@@ -53,7 +53,7 @@ namespace WebApi.Controllers
             return Ok(car);
         }
 
-        [HttpDelete("DeletarCar")]
+        [HttpDelete("DeletarCar/{IdCar}")]
         public async Task<ActionResult<ResponseModel<List<CarModel>>>> DeletarCar (Guid IdCar)
         {
             var car = await _carInterface.DeletarCar (IdCar);

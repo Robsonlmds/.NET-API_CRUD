@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Microsoft.VisualBasic;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using WebApi.Models;
 
 namespace WebApi.Services.Car
 {
-    public class CarService : ICarInterface
+    public class CarService : ControllerBase, ICarInterface
     {
         private readonly ApplicationDbContext _context;
         public CarService(ApplicationDbContext context)
@@ -76,19 +78,27 @@ namespace WebApi.Services.Car
             }
         }
 
-        public async Task<ResponseModel<List<CarModel>>> CriarCar(CarAddDTO carAddDTO)
+        [HttpPost]
+        public async Task<IActionResult> CriarCar([FromBody] CarAddDTO carAddDTO)
         {
             ResponseModel<List<CarModel>> resposta = new ResponseModel<List<CarModel>>();
 
             try
             {
+                if (carAddDTO == null || carAddDTO.Staff == null || carAddDTO.Staff.Id == Guid.Empty)
+                {
+                    resposta.Mensagem = "Dados inválidos enviados!";
+                    resposta.Status = false;
+                    return BadRequest(resposta);
+                }
+
                 var staff = await _context.Staffs
                     .FirstOrDefaultAsync(staffBanco => staffBanco.Id == carAddDTO.Staff.Id);
 
-                if(staff == null)
+                if (staff == null)
                 {
-                    resposta.Mensagem = "Nenhum carro foi criado!";
-                    return resposta;
+                    resposta.Mensagem = "Nenhum staff encontrado para o carro!";
+                    return NoContent();
                 }
 
                 var car = new CarModel()
@@ -100,17 +110,18 @@ namespace WebApi.Services.Car
                 _context.Cars.Add(car);
                 await _context.SaveChangesAsync();
 
-                resposta.Dados = await _context.Cars
-                    .Include(a => a.Staff).ToListAsync();
+                resposta.Dados = await _context.Cars.Include(a => a.Staff).ToListAsync();
+                resposta.Mensagem = "Carro criado com sucesso!";
+                resposta.Status = true;
 
-                return resposta;
-
+                return Ok(resposta);
             }
             catch (Exception ex)
             {
-                resposta.Mensagem = ex.Message;
+                resposta.Mensagem = $"Erro ao criar o carro: {ex.Message}";
                 resposta.Status = false;
-                return resposta;
+                /*return BadRequest(resposta);*/
+                return BadRequest(resposta);
             }
         }
 
