@@ -54,8 +54,13 @@ A aplicação possui endpoints para realizar operações de CRUD nas diferentes 
 
 - `GET /api/staff`
 - `POST /api/staff`
-- `PUT /api/staff/{id}`
-- `DELETE /api/staff/{id}`
+- `PUT /api/buscar/{id}`
+- `DELETE /buscarPorCar/{id}`
+
+- `GET /api/Car`
+- `POST /api/Car`
+- `PUT /api/buscar/{id}`
+- `DELETE /buscarPorStaff/{id}`
 
 ### Relações Entre Entidades
 
