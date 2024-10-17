@@ -21,8 +21,6 @@ Este projeto é uma aplicação CRUD (Create, Read, Update, Delete) desenvolvida
 - **SQL Server**
 - **Repository Pattern**
 - **ASP.NET Core**
-- **Bootstrap 5**
-- **CSHTML**
 
 ## Funcionalidades
 
